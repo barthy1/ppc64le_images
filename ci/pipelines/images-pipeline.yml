@@ -1,0 +1,102 @@
+jobs:
+- name: go-image
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+      passed: [git-image]
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: go-resource-image
+    params:
+      load_base: base-image
+      build: images-resource/ci/golang1.6
+    get_params: {rootfs: true}
+
+- name: ruby-image
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: ruby-resource-image
+    params:
+      load_base: base-image
+      build: images-resource/ci/ruby2.2.3
+    get_params: {rootfs: true}
+
+- name: git-image
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: git-resource-image
+    params:
+      load_base: base-image
+      build: images-resource/ci/git2.4
+    get_params: {rootfs: true}
+
+resources:
+- name: images-resource
+  type: git
+  source:
+    uri: https://github.com/barthy1/ppc64le_images.git
+    branch: master
+
+- name: base-image
+  type: docker-image
+  source:
+    repository: ppc64le/ubuntu
+    tag: trusty
+
+- name: go-resource-image
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/golang
+    tag: 1.6
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
+
+- name: git-resource-image
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/git
+    tag: 2.4
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
+- name: ruby-resource-image
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/ruby2.2.3
+    insecure_registries: ["140.211.168.97:5000"]
+
+resource_types:
+#- name: git
+#  type: docker-image
+#  source:
+#    repository: 140.211.168.97:5000/git-resource-new
+#    insecure_registries: ["140.211.168.97:5000"]
+#    username: {{username}}
+#    password: {{password}}
+
+- name: docker-image
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/docker-image-resource-new-1
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
