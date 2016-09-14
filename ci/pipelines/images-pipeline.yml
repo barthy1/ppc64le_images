@@ -16,6 +16,23 @@ jobs:
       build: images-resource/ci/golang1.6
     get_params: {rootfs: true}
 
+- name: go-image1.7
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+      passed: [git-image]
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: go-resource-image17
+    params:
+      load_base: base-image
+      build: images-resource/ci/golang1.7
+    get_params: {rootfs: true}
+
 - name: ruby-image
   serial: true
   public: true
@@ -70,6 +87,15 @@ resources:
     username: {{username}}
     password: {{password}}
 
+- name: go-resource-image17
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/golang
+    tag: "1.7"
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
+
 - name: git-resource-image
   type: docker-image
   source:
@@ -93,10 +119,10 @@ resource_types:
 #    username: {{username}}
 #    password: {{password}}
 
-- name: docker-image
-  type: docker-image
-  source:
-    repository: 140.211.168.97:5000/docker-image-resource-new-1
-    insecure_registries: ["140.211.168.97:5000"]
-    username: {{username}}
-    password: {{password}}
+#- name: docker-image
+#  type: docker-image
+#  source:
+#    repository: 140.211.168.97:5000/docker-image-resource-new-1
+#    insecure_registries: ["140.211.168.97:5000"]
+#    username: {{username}}
+#    password: {{password}}
