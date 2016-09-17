@@ -65,13 +65,28 @@ jobs:
       build: images-resource/ci/git2.4
     get_params: {rootfs: true}
 
+- name: git-image
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: git-resource-image2.10
+    params:
+      load_base: base-image
+      build: images-resource/ci/git2.10
+    get_params: {rootfs: true}
+
 resources:
 - name: images-resource
   type: git
   source:
     uri: https://github.com/barthy1/ppc64le_images.git
     branch: master
-
 - name: base-image
   type: docker-image
   source:
@@ -101,6 +116,14 @@ resources:
   source:
     repository: 140.211.168.97:5000/git
     tag: 2.4
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
+- name: git-resource-image2.10
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/git
+    tag: 2.10.0
     insecure_registries: ["140.211.168.97:5000"]
     username: {{username}}
     password: {{password}}
