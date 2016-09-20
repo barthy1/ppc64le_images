@@ -65,7 +65,7 @@ jobs:
       build: images-resource/ci/git2.4
     get_params: {rootfs: true}
 
-- name: git-image
+- name: git-image2.10
   serial: true
   public: true
   plan:
@@ -79,6 +79,22 @@ jobs:
     params:
       load_base: base-image
       build: images-resource/ci/git2.10
+    get_params: {rootfs: true}
+
+- name: git-image2.8.4
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: git-resource-image2.10
+    params:
+      load_base: base-image
+      build: images-resource/ci/git2.8.4
     get_params: {rootfs: true}
 
 resources:
