@@ -49,6 +49,22 @@ jobs:
       build: images-resource/ci/ruby2.2.3
     get_params: {rootfs: true}
 
+- name: ruby-image2.3.1
+  serial: true
+  public: true
+  plan:
+  - aggregate:
+    - get: images-resource
+      trigger: false
+    - get: base-image
+      params: {save: true}
+      trigger: false
+  - put: ruby-resource-image2.3.1
+    params:
+      load_base: base-image
+      build: images-resource/ci/ruby2.3.1
+    get_params: {rootfs: true}
+
 - name: git-image
   serial: true
   public: true
@@ -91,7 +107,7 @@ jobs:
     - get: base-image
       params: {save: true}
       trigger: false
-  - put: git-resource-image2.10
+  - put: git-resource-image2.8.4
     params:
       load_base: base-image
       build: images-resource/ci/git2.8.4
@@ -107,7 +123,7 @@ resources:
   type: docker-image
   source:
     repository: ppc64le/ubuntu
-    tag: trusty
+    tag: "14.04"
 
 - name: go-resource-image
   type: docker-image
@@ -143,12 +159,30 @@ resources:
     insecure_registries: ["140.211.168.97:5000"]
     username: {{username}}
     password: {{password}}
+- name: git-resource-image2.8.4
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/git
+    tag: "2.8.4"
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
 - name: ruby-resource-image
   type: docker-image
   source:
-    repository: 140.211.168.97:5000/ruby2.2.3
+    repository: 140.211.168.97:5000/ruby
     insecure_registries: ["140.211.168.97:5000"]
-
+    username: {{username}}
+    password: {{password}}
+    tag: "2.2.3"
+- name: ruby-resource-image2.3.1
+  type: docker-image
+  source:
+    repository: 140.211.168.97:5000/ruby
+    insecure_registries: ["140.211.168.97:5000"]
+    username: {{username}}
+    password: {{password}}
+    tag: "2.3.1"
 resource_types:
 #- name: git
 #  type: docker-image
